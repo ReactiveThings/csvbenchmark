@@ -114,8 +114,6 @@ namespace ConsoleApp1
         {
             Stopwatch sw = new Stopwatch();
 
-            
-
             var csvData = String.Join('\n', Enumerable.Repeat(0, 100000000).Select(p => $"1,2,3,4,5"));
             var encoding = Encoding.UTF8;
             var rows = encoding.GetBytes(csvData);
@@ -125,7 +123,6 @@ namespace ConsoleApp1
 
             var sum = Enumerable.Repeat(0, 96)
             .AsParallel()
-            //.WithDegreeOfParallelism(16)
             .Select(p => parser.GetSum(rows.AsSpan())).Sum();
 
             sw.Stop();
