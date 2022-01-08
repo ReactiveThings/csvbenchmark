@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -109,10 +110,30 @@ namespace ConsoleApp1
 
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            await TestImplementationAsync();
-            var summary = BenchmarkRunner.Run<CsvFileParserBenchmarks>();
+            Stopwatch sw = new Stopwatch();
+
+            
+
+            var csvData = String.Join('\n', Enumerable.Repeat(0, 100000000).Select(p => $"1,2,3,4,5"));
+            var encoding = Encoding.UTF8;
+            var rows = encoding.GetBytes(csvData);
+            var parser = new SpanBytesExtensionsCsvParser();
+
+            sw.Start();
+
+            var sum = Enumerable.Repeat(0, 96)
+            .AsParallel()
+            //.WithDegreeOfParallelism(16)
+            .Select(p => parser.GetSum(rows.AsSpan())).Sum();
+
+            sw.Stop();
+            Console.WriteLine(sum);
+            Console.WriteLine("Elapsed={0}",sw.Elapsed);
+            
+            //await TestImplementationAsync();
+            //var summary = BenchmarkRunner.Run<CsvFileParserBenchmarks>();
         }
 
         private static async Task TestImplementationAsync()

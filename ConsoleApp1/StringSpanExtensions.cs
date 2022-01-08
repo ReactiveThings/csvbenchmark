@@ -18,6 +18,13 @@ namespace ConsoleApp1
             return new SplitEnumerator<T>(str, separator);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static SplitEnumerator<T> FastSplit<T>(this Span<T> str, T separator) where T : IEquatable<T>
+        {
+            // LineSplitEnumerator is a struct so there is no allocation here
+            return new SplitEnumerator<T>(str, separator);
+        }
+
 
 
         // Must be a ref struct as it contains a ReadOnlySpan<char>
